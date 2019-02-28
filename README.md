@@ -167,7 +167,7 @@ class ExemploState extends React.Component {
                 {
                     type: "button",
                     onClick: (evt) => this.contaClique(evt),
-                    disabled: botaoAtivo
+                    disabled: botaoAtivo === false
                 },
                 "Click me!!!!!"
             )
