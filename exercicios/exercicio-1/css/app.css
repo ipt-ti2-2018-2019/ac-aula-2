@@ -1,0 +1,14 @@
+.lista-todos {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.lista-todos > li {
+  padding: 5px;
+  border: 1px solid #aaa;
+  border-bottom-width: 0;
+}
+
+.lista-todos > li:last-child {
+  border-bottom-width: 1px;
+}
