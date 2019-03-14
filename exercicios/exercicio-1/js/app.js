@@ -2,6 +2,8 @@
 /// <reference path="../typings/react.d.ts" />
 /// <reference path="../typings/react-dom.d.ts" />
 
+// @ts-check
+
 /**
  * Representa a aplicação inteira, ou, o ponto de "arranque"
  * da aplicação de tarefas.
@@ -56,7 +58,8 @@ class TodoApp extends React.Component {
         // Esta função é passada, por parâmetro, para dentro da lista
         // de tarefas, e pode ser acedida via `props.onDeleteTodo(5)` (p.e.)
         // para PEDIR que seja apagada uma tarefa da lista, no índice `idx`.
-        onDeleteTodo: (idx) => this.handleDeleteTodo(idx)
+        onDeleteTodo: (idx) => this.handleDeleteTodo(idx),
+        onEditTodo: (idx, novoTexto) => this.handleEditTodo(idx, novoTexto)
       })
     );
   }
@@ -96,13 +99,28 @@ class TodoApp extends React.Component {
 
     this.setState({ listaTarefas: aux });
   }
+
+  /**
+   * Atualiza o texto da tarefa na posição especificada do array de tarefas.
+   * @param {number} index
+   * @param {string} novoTexto
+   */
+  handleEditTodo(index, novoTexto) {
+    // Criar um array auxiliar para editar.
+    let aux = this.state.listaTarefas.slice();
+
+    // Atualizar o texto da tarefa.
+    aux[index] = novoTexto;
+
+    this.setState({ listaTarefas: aux });
+  }
 }
 
 /**
  * Representa a lista das tarefas que o utilizador tem
  * para fazer.
  *
- * @param {{ items: Array, onDeleteTodo(index: number): void }} props
+ * @param {{ items: Array, onDeleteTodo(index: number): void, onEditTodo(idx, novoTexto): void }} props
  */
 function ListaTodos(props) {
   // Quando o utilizador não tem tarefas, mostrar-lhe uma
@@ -129,26 +147,11 @@ function ListaTodos(props) {
     </li>
     */
     listaLis.push(
-      React.createElement(
-        "li",
-        null,
-        tarefa,
-        // Botão para apagar uma tarefa.
-        React.createElement(
-          "button",
-          {
-            type: "button",
-            // Quando se clica no botão,
-            // usa-se a props `onDeleteTodo`, que é uma função,
-            // e invoca-se usando o `i` que foi definido no ciclo
-            // for criado anteriormente.
-            // O parâmetro do `evt`, que representa o clique,
-            // é ignorado, porque não temos uso para ele.
-            onClick: (evt) => props.onDeleteTodo(i)
-          },
-          "x"
-        )
-      )
+      React.createElement(TodoItem, {
+        tarefa: tarefa,
+        onDeleteTodo: () => props.onDeleteTodo(i),
+        onEditTodo: (novoTexto) => props.onEditTodo(i, novoTexto)
+      })
     );
   }
 
