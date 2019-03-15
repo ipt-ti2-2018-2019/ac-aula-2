@@ -63,7 +63,8 @@ class TodoApp extends React.Component {
         // Quando o utilizador clica no botão para apagar uma tarefa,
         // a função que está nesta `prop` é chamada com o índice `idx`.
         // (ver o `onClick` do botão de eliminar no `ListaTodos`).
-        onDeleteTodo: (idx) => this.handleDeleteTodo(idx)
+        onDeleteTodo: (idx) => this.handleDeleteTodo(idx),
+        onEditTodo: (idx, novoTexto) => this.handleEditTodo(idx, novoTexto)
       })
     );
   }
@@ -111,6 +112,14 @@ class TodoApp extends React.Component {
       listaTarefas: aux
     });
   }
+
+  handleEditTodo(index, novoTexto) {
+    let aux = this.state.listaTarefas.slice();
+
+    aux[index] = novoTexto;
+
+    this.setState({ listaTarefas: aux });
+  }
 }
 
 /**
@@ -134,26 +143,11 @@ class ListaTodos extends React.Component {
       </li>
       */
       listaLis.push(
-        React.createElement(
-          "li",
-          null,
-          tarefa,
-          // Botão para apagar uma tarefa
-          React.createElement(
-            "button",
-            {
-              type: "button",
-              // Quando o utilizador clica no botão, fazemos uso
-              // da função associada à `prop` `onDeleteTodo`.
-              // Quando é invocada a função, passamos-lhe o valor
-              // da variável `i`, que contém o índice da tarefa a remover.
-              // Não é usado o parâmetro do evento do clique, `evt`, porque
-              // não é necessário.
-              onClick: (evt) => this.props.onDeleteTodo(i)
-            },
-            "x"
-          )
-        )
+        React.createElement(TodoItem, {
+          tarefa: tarefa,
+          onDeleteTodo: () => this.props.onDeleteTodo(i),
+          onEditTodo: (novoTexto) => this.props.onEditTodo(i, novoTexto)
+        })
       );
     }
 
