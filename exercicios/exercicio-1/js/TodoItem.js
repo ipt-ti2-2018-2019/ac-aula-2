@@ -7,8 +7,22 @@ class TodoItem extends React.Component {
     super(props);
 
     this.state = {
-      editar: false
+      editar: false,
+      textoEditado: props.value
     };
+  }
+
+  handleToggleEditingItem() {
+    this.setState({ editar: !this.state.editar });
+  }
+
+  handleTextBoxChange(evt) {
+    this.setState({ textoEditado: evt.target.value });
+  }
+
+  handleSave() {
+    this.props.onEdited(this.state.textoEditado);
+    this.handleToggleEditingItem();
   }
 
   render() {
@@ -19,19 +33,22 @@ class TodoItem extends React.Component {
         null,
         React.createElement("input", {
           type: "text",
-          value: this.props.value
+          value: this.state.textoEditado,
+          onChange: (evt) => this.handleTextBoxChange(evt)
         }),
         React.createElement(
           "button",
           {
-            type: "button"
+            type: "button",
+            onClick: (evt) => this.handleSave()
           },
           "Guardar"
         ),
         React.createElement(
           "button",
           {
-            type: "button"
+            type: "button",
+            onClick: (evt) => this.handleToggleEditingItem()
           },
           "Cancelar"
         )
@@ -45,7 +62,7 @@ class TodoItem extends React.Component {
           "button",
           {
             type: "button",
-            onClick: (evt) => this.handleToggleEditingItem(i)
+            onClick: (evt) => this.handleToggleEditingItem()
           },
           "Editar"
         ),
@@ -53,7 +70,7 @@ class TodoItem extends React.Component {
           "button",
           {
             type: "button",
-            onClick: (evt) => this.props.onDelete(i)
+            onClick: (evt) => this.props.onDelete()
           },
           "🗑️"
         )

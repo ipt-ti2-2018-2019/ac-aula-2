@@ -52,7 +52,8 @@ class TodoApp extends React.Component {
       ),
       React.createElement(ListaTodos, {
         listaTarefas: this.state.listaTarefas,
-        onDelete: (idx) => this.handleDelete(idx)
+        onDelete: (idx) => this.handleDelete(idx),
+        onItemEdited: (idx, novoTexto) => this.handleItemEdited(idx, novoTexto)
       })
     );
   }
@@ -91,6 +92,14 @@ class TodoApp extends React.Component {
 
     this.setState({ listaTarefas: aux });
   }
+
+  handleItemEdited(index, novoTexto) {
+    let aux = this.state.listaTarefas.slice();
+
+    aux[index] = novoTexto;
+
+    this.setState({ listaTarefas: aux });
+  }
 }
 
 class ListaTodos extends React.Component {
@@ -105,20 +114,6 @@ class ListaTodos extends React.Component {
     };
   }
 
-  handleToggleEditingItem(index) {
-    let aux = this.state.editar.slice();
-
-    if (this.state.editar.indexOf(index) === -1) {
-      // Adicionar à lista -- começar a editar
-      aux.push(index);
-    } else {
-      // Tirar da lista -- terminar edição
-      aux.splice(this.state.editar.indexOf(index), 1);
-    }
-
-    this.setState({ editar: aux });
-  }
-
   render() {
     // Esta lista/array vai conter um <li /> por cada tarefa que está
     // em `this.props.listaTarefas`.
@@ -127,7 +122,13 @@ class ListaTodos extends React.Component {
     for (let i = 0; i < this.props.listaTarefas.length; i++) {
       let tarefa = this.props.listaTarefas[i];
 
-      listaLisAux.push(React.createElement(TodoItem, { value: tarefa }));
+      listaLisAux.push(
+        React.createElement(TodoItem, {
+          value: tarefa,
+          onDelete: () => this.props.onDelete(i),
+          onEdited: (novoTexto) => this.props.onItemEdited(i, novoTexto)
+        })
+      );
     }
 
     return React.createElement("ul", null, listaLisAux);
